@@ -681,6 +681,21 @@ function toast(msg){
   setTimeout(function(){if(el.parentNode) el.parentNode.removeChild(el);},2000);
 }
 refreshStat();
+
+var pwCallback=null;
+function showPwDialog(cb){
+  pwCallback=cb;document.getElementById('pwOverlay').style.display='flex';document.getElementById('pwInput').value='';document.getElementById('pwError').style.display='none';
+  setTimeout(function(){var inp=document.getElementById('pwInput');if(inp)inp.focus();},200);
+}
+function hidePwDialog(){document.getElementById('pwOverlay').style.display='none';pwCallback=null;}
+document.getElementById('pwOk').onclick=function(){
+  if(document.getElementById('pwInput').value==='520'){hidePwDialog();if(pwCallback)pwCallback();}
+  else{document.getElementById('pwError').style.display='block';document.getElementById('pwInput').value='';document.getElementById('pwInput').focus();}
+};
+document.getElementById('pwCancel').onclick=hidePwDialog;
+document.getElementById('pwOverlay').onclick=function(e){if(e.target===document.getElementById('pwOverlay'))hidePwDialog();};
+document.getElementById('pwInput').onkeydown=function(e){if(e.keyCode===13)document.getElementById('pwOk').click();};
+
 </script>
 
 <div class="pw-overlay" id="pwOverlay" style="display:none">
