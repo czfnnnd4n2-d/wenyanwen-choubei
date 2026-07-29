@@ -9,7 +9,7 @@
 <style>
 :root{--bg:#f5f0e8;--br:#8B4513;--gr:#2E8B57;--bl:#4682B4;--pu:#6A5ACD;--or:#CD853F;--gy:#999;--w:#fff;--t:#333;--lt:#888;--bd:#e0d8c8;--sh:0 2px 12px rgba(0,0,0,.08);--r:12px;--sb:env(safe-area-inset-bottom,16px)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","楷体",KaiTi,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;padding:12px 14px calc(12px+var(--sb));-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","楷体",KaiTi,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;padding:12px 14px calc(12px+var(--sb));padding-top:22vh;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 .topbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .mode-group{display:flex;align-items:center;gap:4px;background:var(--w);border-radius:22px;padding:3px;box-shadow:var(--sh)}
 .mode-btn{border:none;background:transparent;font-size:13px;font-weight:600;padding:7px 14px;border-radius:20px;color:var(--gy);cursor:pointer;transition:.2s}
@@ -19,14 +19,13 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","楷体",KaiTi,sa
 .btn-catalog{background:var(--bl);color:var(--w);font-size:12px;padding:7px 12px}
 .btn:active{opacity:.8;transform:scale(.96)}
 .stat-bar{text-align:center;font-size:12px;color:var(--lt);margin-bottom:4px}
-/* 字号调节 */
 .font-size-bar{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
 .font-size-bar span{font-size:11px;color:var(--lt)}
 .font-size-btn{border:1px solid var(--bd);background:var(--w);width:30px;height:30px;border-radius:15px;font-size:14px;font-weight:700;color:var(--t);cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center}
 .font-size-btn:active{background:#eee;transform:scale(.92)}
 .font-size-val{font-size:12px;color:var(--br);font-weight:700;min-width:32px;text-align:center}
-.cards-area{display:flex;flex-direction:column;gap:10px;min-height:160px}
-.placeholder{text-align:center;color:#bbb;font-size:15px;padding:50px 0}
+.cards-area{display:flex;flex-direction:column;gap:10px;min-height:120px}
+.placeholder{text-align:center;color:#bbb;font-size:15px;padding:40px 0}
 .card{background:var(--w);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
 .card-header{background:var(--br);color:var(--w);padding:7px 14px;font-size:12px;font-weight:700;display:flex;justify-content:space-between}
 .card-header.revealed{background:var(--pu)}
@@ -48,9 +47,10 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","楷体",KaiTi,sa
 .btn-done{background:var(--gr);color:var(--w)}
 .btn-skip{background:var(--or);color:var(--w)}
 .btn-reveal{background:var(--pu);color:var(--w)}
+.btn-text{background:#8B6914;color:var(--w)}
 .btn-mic{background:#e74c3c;color:var(--w);font-size:15px;padding:10px 20px}
-.btn-mic.recording{background:#c0392b;animation:pulse2 .8s infinite}
-@keyframes pulse2{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,.4)}50%{box-shadow:0 0 0 12px rgba(231,76,60,0)}}
+.btn-mic.recording{background:#27ae60;animation:pulse2 .8s infinite}
+@keyframes pulse2{0%,100%{box-shadow:0 0 0 0 rgba(39,174,96,.4)}50%{box-shadow:0 0 0 12px rgba(39,174,96,0)}}
 .btn-reset{background:#bbb;color:var(--w)}
 .btn-undo{background:#888;color:var(--w)}
 .btn-act:disabled{opacity:.35;pointer-events:none}
@@ -131,6 +131,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","楷体",KaiTi,sa
   <button class="btn-act btn-done" id="btnDone" disabled>已背完</button>
   <button class="btn-act btn-skip" id="btnSkip" disabled>跳过</button>
   <button class="btn-act btn-reveal" id="btnReveal" disabled>显示篇名</button>
+  <button class="btn-act btn-text" id="btnText" disabled>显示全文</button>
   <button class="btn-act btn-reset" id="btnReset">重置本轮</button>
   <button class="btn-act btn-undo" id="btnUndo">撤销</button>
 </div>
@@ -265,7 +266,7 @@ syncState();
 function $(id){return document.getElementById(id);}
 var modeGroup=$('modeGroup'),btnDraw=$('btnDraw'),btnCatalog=$('btnCatalog');
 var statBar=$('statBar'),cardsArea=$('cardsArea');
-var btnMic=$('btnMic'),btnDone=$('btnDone'),btnSkip=$('btnSkip'),btnReveal=$('btnReveal'),btnReset=$('btnReset'),btnUndo=$('btnUndo');
+var btnMic=$('btnMic'),btnDone=$('btnDone'),btnSkip=$('btnSkip'),btnReveal=$('btnReveal'),btnText=$('btnText'),btnReset=$('btnReset'),btnUndo=$('btnUndo');
 var overlay=$('overlay'),sheetBody=$('sheetBody'),sheetClose=$('sheetClose'),btnShowAdd=$('btnShowAdd'),addForm=$('addForm'),btnConfirmAdd=$('btnConfirmAdd'),catalogCount=$('catalogCount');
 var detailOverlay=$('detailOverlay'),detailTitle=$('detailTitle'),detailText=$('detailText'),detailBooklet=$('detailBooklet'),detailSeq=$('detailSeq'),detailGrade=$('detailGrade'),detailNote=$('detailNote'),detailClose=$('detailClose'),detailCancel=$('detailCancel'),detailSave=$('detailSave');
 var detailEditingIdx=-1;
@@ -293,11 +294,29 @@ function refreshStat(){
   if(done>=total) statBar.textContent='第 '+state.current_round+' 轮全部完成！点击抽取开始第 '+(state.current_round+1)+' 轮';
   else statBar.textContent='第 '+state.current_round+' 轮  |  已背 '+done+'/'+total+'  |  剩余 '+remaining+' 篇';
 }
-var revealedCards={};
+var revealedCards={};        // 只标记篇名是否已显示
+var textRevealedCards={};    // 正文是否已显示
 var currentDraw=[];
-function clearCards(){cardsArea.innerHTML='';revealedCards={};}
-function disableActions(){btnMic.disabled=true;btnDone.disabled=true;btnSkip.disabled=true;btnReveal.disabled=true;}
-function enableActions(){btnMic.disabled=false;btnDone.disabled=false;btnSkip.disabled=false;btnReveal.disabled=false;}
+function clearCards(){
+  cardsArea.innerHTML='';
+  revealedCards={};
+  textRevealedCards={};
+}
+function disableActions(){btnMic.disabled=true;btnDone.disabled=true;btnSkip.disabled=true;btnReveal.disabled=true;btnText.disabled=true;}
+function enableActions(){
+  btnMic.disabled=false;btnDone.disabled=false;btnSkip.disabled=false;
+  // 如果没有显示篇名，显示篇名按钮可用；如果已显示篇名但未显示正文，显示全文按钮可用
+  updateRevealBtns();
+}
+function updateRevealBtns(){
+  var allRev=true,allText=true;
+  for(var i=0;i<currentDraw.length;i++){
+    if(!revealedCards[i]) allRev=false;
+    if(!textRevealedCards[i]) allText=false;
+  }
+  btnReveal.disabled=allRev;
+  btnText.disabled=allText;
+}
 function showPlaceholder(){clearCards();cardsArea.innerHTML='<div class="placeholder">点击「随机抽取」开始背诵</div>';}
 
 // ==== 抽取 ====
@@ -332,29 +351,68 @@ function draw(){
   enableActions();refreshStat();
 }
 
-// ==== 显示篇名 ====
+// ==== 显示篇名（只显示标题，不显示正文）====
 function revealTitle(){
-  var i,art,card,body,titleDiv,info,orig,tb;
-  for(i=0;i<currentDraw.length;i++){
-    art=currentDraw[i];
-    card=cardsArea.children[i];if(!card) continue;
+  var allDone=true;
+  for(var i=0;i<currentDraw.length;i++){
+    if(revealedCards[i]) continue;
+    allDone=false;
+    var art=currentDraw[i];
+    var card=cardsArea.children[i];if(!card) continue;
+    var body=card.querySelector('.card-body');
     card.querySelector('.card-header').classList.add('revealed');
-    body=card.querySelector('.card-body');
-    titleDiv=body.querySelector('.card-title');
+    var titleDiv=body.querySelector('.card-title');
     if(!titleDiv){titleDiv=document.createElement('div');titleDiv.className='card-title';}
     titleDiv.textContent=art.title;
-    info=body.querySelector('.card-info');
+    var info=body.querySelector('.card-info');
     if(!info){info=document.createElement('div');info.className='card-info';}
     info.textContent=(art.grade||'')+'  |  '+(art.note||'');
-    tb=body.querySelector('.transcript-box');
-    orig=body.querySelector('#original-'+i);
-    if(tb) body.insertBefore(info,tb);
+    var tb=body.querySelector('.transcript-box');
+    if(tb){body.insertBefore(info,tb);body.insertBefore(titleDiv,info);}
     else{body.appendChild(titleDiv);body.appendChild(info);}
-    if(orig){orig.style.display='block';orig.innerHTML=buildOriginalHTML(art.text);}
     revealedCards[i]=true;
   }
-  btnReveal.disabled=true;
+  if(allDone){toast('所有篇名已显示');}
+  updateRevealBtns();
 }
+
+// ==== 显示全文（含篇名 + 正文）====
+function revealText(){
+  var allDone=true;
+  for(var i=0;i<currentDraw.length;i++){
+    if(textRevealedCards[i]) continue;
+    allDone=false;
+    var art=currentDraw[i];
+    var card=cardsArea.children[i];if(!card) continue;
+    // 先确保篇名显示
+    if(!revealedCards[i]){
+      card.querySelector('.card-header').classList.add('revealed');
+      var body=card.querySelector('.card-body');
+      var titleDiv=body.querySelector('.card-title');
+      if(!titleDiv){titleDiv=document.createElement('div');titleDiv.className='card-title';}
+      titleDiv.textContent=art.title;
+      var info=body.querySelector('.card-info');
+      if(!info){info=document.createElement('div');info.className='card-info';}
+      info.textContent=(art.grade||'')+'  |  '+(art.note||'');
+      var tb=body.querySelector('.transcript-box');
+      if(tb){body.insertBefore(info,tb);body.insertBefore(titleDiv,info);}
+      else{body.appendChild(titleDiv);body.appendChild(info);}
+      revealedCards[i]=true;
+    }
+    // 显示正文
+    var orig=document.getElementById('original-'+i);
+    if(orig){
+      orig.style.display='block';
+      orig.innerHTML=buildOriginalHTML(art.text);
+      // 如果同时有语音校对结果，保留
+    }
+    textRevealedCards[i]=true;
+  }
+  if(allDone){toast('所有全文已显示');}
+  btnReveal.disabled=true;
+  updateRevealBtns();
+}
+
 function buildOriginalHTML(text){
   var chars=text.split(''),html='',j;
   for(j=0;j<chars.length;j++) html+='<span>'+chars[j]+'</span>';
@@ -367,38 +425,53 @@ function startRecording(){
   if(isRecording) return;
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){toast('浏览器不支持语音识别，请用 Safari 或 Chrome');return;}
+  // 先确保篇名和正文显示（语音校对需要看原文）
   var i,body,orig,tr,td,inf;
   for(i=0;i<currentDraw.length;i++){
     body=cardsArea.children[i]?cardsArea.children[i].querySelector('.card-body'):null;
     if(!body) continue;
-    orig=body.querySelector('#original-'+i);
-    if(orig){orig.style.display='block';orig.innerHTML=buildOriginalHTML(currentDraw[i].text);}
-    tr=body.querySelector('#transcript-'+i);
-    if(tr){tr.style.display='block';tr.textContent='';tr.classList.add('listening');}
+    // 显示篇名（如果还没显示）
     if(!revealedCards[i]){
       cardsArea.children[i].querySelector('.card-header').classList.add('revealed');
       td=body.querySelector('.card-title');
-      if(!td){td=document.createElement('div');td.className='card-title';body.insertBefore(td,tr);}
+      if(!td){td=document.createElement('div');td.className='card-title';}
       td.textContent=currentDraw[i].title;
       inf=body.querySelector('.card-info');
-      if(!inf){inf=document.createElement('div');inf.className='card-info';body.insertBefore(inf,tr);}
+      if(!inf){inf=document.createElement('div');inf.className='card-info';}
       inf.textContent=(currentDraw[i].grade||'')+'  |  '+(currentDraw[i].note||'');
+      tr=body.querySelector('#transcript-'+i);
+      if(tr){body.insertBefore(inf,tr);body.insertBefore(td,inf);}
+      else{body.appendChild(td);body.appendChild(inf);}
       revealedCards[i]=true;
     }
+    // 显示原文
+    orig=body.querySelector('#original-'+i);
+    if(orig){orig.style.display='block';orig.innerHTML=buildOriginalHTML(currentDraw[i].text);}
+    textRevealedCards[i]=true;
+    // 清空转录
+    tr=body.querySelector('#transcript-'+i);
+    if(tr){tr.style.display='block';tr.textContent='';tr.classList.add('listening');}
   }
-  btnReveal.disabled=true;
+  btnReveal.disabled=true;btnText.disabled=true;
   recognition=new SR();
   recognition.lang='zh-CN';recognition.interimResults=true;recognition.continuous=true;recognition.maxAlternatives=1;
   recognition.onresult=function(e){
     var t='',j;for(j=e.resultIndex;j<e.results.length;j++) t+=e.results[j][0].transcript;
     var tr0=document.getElementById('transcript-0');if(tr0) tr0.textContent=t;
   };
-  recognition.onerror=function(e){if(e.error!=='aborted')toast('语音错误:'+e.error);stopRecordingUI();};
+  recognition.onerror=function(e){
+    if(e.error==='no-speech'){toast('未检测到语音，请再试一次');stopRecordingUI();}
+    else if(e.error==='aborted'){stopRecordingUI();}
+    else{toast('语音错误:'+e.error);stopRecordingUI();}
+  };
   recognition.onend=function(){stopRecordingUI();autoCheckAll();};
-  try{recognition.start();isRecording=true;btnMic.textContent='正在聆听…';btnMic.classList.add('recording');btnDone.disabled=true;btnSkip.disabled=true;}
+  try{recognition.start();isRecording=true;btnMic.textContent='停止背诵';btnMic.classList.add('recording');btnDone.disabled=true;btnSkip.disabled=true;}
   catch(ex){toast('无法启动麦克风，请检查权限');}
 }
-function stopRecording(){if(recognition)try{recognition.stop();}catch(e){};stopRecordingUI();autoCheckAll();}
+function stopRecording(){
+  if(recognition)try{recognition.stop();}catch(e){}
+  stopRecordingUI();autoCheckAll();
+}
 function stopRecordingUI(){
   isRecording=false;btnMic.textContent='开始背诵';btnMic.classList.remove('recording');
   btnDone.disabled=false;btnSkip.disabled=false;
@@ -451,6 +524,7 @@ function renderCompare(origEl,result,cardIdx){
 
 // ==== 标记 ====
 function markDone(){
+  if(isRecording){stopRecording();}
   var rnd=state.current_round;
   for(var i=0;i<currentDraw.length;i++){
     state.articles[currentDraw[i].title].done=true;
@@ -462,6 +536,7 @@ function markDone(){
   if(allDone) toast('第 '+rnd+' 轮全部背完！');
 }
 function markSkip(){
+  if(isRecording){stopRecording();}
   var rnd=state.current_round;
   for(var i=0;i<currentDraw.length;i++) state.articles[currentDraw[i].title].round=rnd;
   saveState();currentDraw=[];showPlaceholder();disableActions();refreshStat();
@@ -572,7 +647,8 @@ btnConfirmAdd.onclick=function(){
 
 // ==== 事件绑定 ====
 btnDraw.onclick=draw;
-btnDone.onclick=markDone;btnSkip.onclick=markSkip;btnReveal.onclick=revealTitle;
+btnDone.onclick=markDone;btnSkip.onclick=markSkip;
+btnReveal.onclick=revealTitle;btnText.onclick=revealText;
 btnReset.onclick=resetRound;btnUndo.onclick=undoMark;
 btnMic.onclick=function(){if(isRecording)stopRecording();else startRecording();};
 btnCatalog.onclick=openCatalog;
