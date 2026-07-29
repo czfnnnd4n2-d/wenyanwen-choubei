@@ -104,6 +104,19 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","楷体",KaiTi,sa
 
 .app-title{text-align:center;padding:0 10px;position:fixed;top:3vh;left:0;right:0;z-index:10}
 .app-title span{font-family:"楷体",KaiTi,"PingFang SC",serif;font-size:42px;font-weight:900;letter-spacing:4px;color:#9B6B5E;text-shadow:0 0 12px rgba(255,255,255,0.9),0 0 24px rgba(255,255,255,0.7),0 2px 6px rgba(155,107,94,0.25)}
+
+.pw-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
+.pw-box{background:var(--w);border-radius:16px;padding:24px;width:280px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.pw-box h3{font-size:18px;color:var(--br);margin-bottom:8px}
+.pw-box p{font-size:12px;color:var(--lt);margin-bottom:16px}
+.pw-box input{width:100%;font-size:24px;padding:10px;text-align:center;border:2px solid var(--bd);border-radius:10px;letter-spacing:8px;outline:none}
+.pw-box input:focus{border-color:var(--br)}
+.pw-btns{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.pw-btns button{font-size:14px;font-weight:600;padding:8px 24px;border-radius:18px;border:none;cursor:pointer}
+.pw-ok{background:var(--br);color:var(--w)}
+.pw-cancel{background:#bbb;color:var(--w)}
+.pw-error{color:#e74c3c;font-size:12px;margin-top:6px;display:none}
+
 </style>
 </head>
 <body>
@@ -583,16 +596,18 @@ function renderCatalog(){
       (function(idx){
         row.onclick=function(e){
           if(e.target&&e.target.classList.contains('adel')) return;
-          openDetail(idx);
+          showPwDialog(function(){openDetail(idx);});
         };
         row.querySelector('.adel').onclick=function(e){
           e.stopPropagation();
+          showPwDialog(function(){
           var art=articles[idx];
           if(!confirm('确定删除\uff62'+art.title+'\uff63吗？')) return;
           if(state.articles[art.title]) delete state.articles[art.title];
           articles.splice(idx,1);
           saveArticles();syncState();
           renderCatalog();refreshStat();
+          });
         };
       })(globalIdx);
       sec.appendChild(row);
@@ -638,6 +653,7 @@ detailSave.onclick=function(){
 // ==== 添加 ====
 btnShowAdd.onclick=function(){addForm.style.display='block';};
 btnConfirmAdd.onclick=function(){
+  showPwDialog(function(){
   var booklet=$('addBooklet').value,title=$('addTitle').value.trim(),text=$('addText').value.trim(),grade=$('addGrade').value.trim(),note=$('addNote').value;
   if(!title){toast('请输入篇目名称');return;}
   var maxSeq=0,j;
@@ -647,6 +663,7 @@ btnConfirmAdd.onclick=function(){
   renderCatalog();addForm.style.display='none';
   $('addTitle').value='';$('addText').value='';$('addGrade').value='';
   refreshStat();toast('已添加\uff62'+title+'\uff63');
+  });
 };
 
 // ==== 事件绑定 ====
@@ -665,5 +682,19 @@ function toast(msg){
 }
 refreshStat();
 </script>
+
+<div class="pw-overlay" id="pwOverlay" style="display:none">
+  <div class="pw-box">
+    <h3>需要密码</h3>
+    <p>删除或修改文章请输入密码</p>
+    <input type="password" id="pwInput" placeholder="····" maxlength="10" inputmode="numeric">
+    <div class="pw-error" id="pwError">密码错误，请重试</div>
+    <div class="pw-btns">
+      <button class="pw-cancel" id="pwCancel">取消</button>
+      <button class="pw-ok" id="pwOk">确认</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
