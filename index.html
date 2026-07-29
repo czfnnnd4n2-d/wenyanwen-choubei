@@ -601,12 +601,12 @@ function renderCatalog(){
         row.querySelector('.adel').onclick=function(e){
           e.stopPropagation();
           showPwDialog(function(){
-          var art=articles[idx];
-          if(!confirm('确定删除\uff62'+art.title+'\uff63吗？')) return;
-          if(state.articles[art.title]) delete state.articles[art.title];
+          var art=articles[idx],t=art.title;
+          if(state.articles[t]) delete state.articles[t];
           articles.splice(idx,1);
           saveArticles();syncState();
           renderCatalog();refreshStat();
+          toast('已删除｢'+t+'｣');
           });
         };
       })(globalIdx);
