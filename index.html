@@ -688,25 +688,25 @@ function showPwDialog(cb){
   setTimeout(function(){var inp=document.getElementById('pwInput');if(inp)inp.focus();},200);
 }
 function hidePwDialog(){document.getElementById('pwOverlay').style.display='none';pwCallback=null;}
-document.getElementById('pwOk').onclick=function(){
-  if(document.getElementById('pwInput').value==='520'){hidePwDialog();if(pwCallback)pwCallback();}
+function pwConfirm(){
+  if(document.getElementById('pwInput').value==='520'){
+    var cb=pwCallback;document.getElementById('pwOverlay').style.display='none';pwCallback=null;
+    if(cb){setTimeout(function(){cb();},0);}
+  }
   else{document.getElementById('pwError').style.display='block';document.getElementById('pwInput').value='';document.getElementById('pwInput').focus();}
-};
-document.getElementById('pwCancel').onclick=hidePwDialog;
-document.getElementById('pwOverlay').onclick=function(e){if(e.target===document.getElementById('pwOverlay'))hidePwDialog();};
-document.getElementById('pwInput').onkeydown=function(e){if(e.keyCode===13)document.getElementById('pwOk').click();};
+}
 
 </script>
 
-<div class="pw-overlay" id="pwOverlay" style="display:none">
-  <div class="pw-box">
+<div class="pw-overlay" id="pwOverlay" style="display:none" onclick="if(event.target===this)hidePwDialog()">
+  <div class="pw-box" onclick="event.stopPropagation()">
     <h3>需要密码</h3>
     <p>删除或修改文章请输入密码</p>
-    <input type="password" id="pwInput" placeholder="····" maxlength="10" inputmode="numeric">
+    <input type="password" id="pwInput" placeholder="····" maxlength="10" inputmode="numeric" onkeydown="if(event.keyCode===13)pwConfirm()">
     <div class="pw-error" id="pwError">密码错误，请重试</div>
     <div class="pw-btns">
-      <button class="pw-cancel" id="pwCancel">取消</button>
-      <button class="pw-ok" id="pwOk">确认</button>
+      <button class="pw-cancel" onclick="hidePwDialog()">取消</button>
+      <button class="pw-ok" onclick="pwConfirm()">确认</button>
     </div>
   </div>
 </div>
