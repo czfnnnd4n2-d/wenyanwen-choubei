@@ -345,6 +345,7 @@ function shuffle(arr){
   return a;
 }
 function draw(){
+  if(currentDraw.length>0){var rnd=state.current_round;for(var i=0;i<currentDraw.length;i++){if(state.articles[currentDraw[i].title]&&!state.articles[currentDraw[i].title].done){state.articles[currentDraw[i].title].done=true;state.articles[currentDraw[i].title].round=rnd;}}saveState();refreshStat();}
   clearCards();disableActions();
   var rnd=state.current_round,pool=[],i,v;
   for(i=0;i<articles.length;i++){
@@ -559,7 +560,6 @@ function markSkip(){
   saveState();currentDraw=[];showPlaceholder();disableActions();refreshStat();
 }
 function resetRound(){
-  if(!confirm('确定要重置第 '+state.current_round+' 轮吗？')) return;
   var rnd=state.current_round,a,st;
   for(var i=0;i<articles.length;i++){
     a=articles[i];st=state.articles[a.title];
@@ -669,8 +669,8 @@ btnConfirmAdd.onclick=function(){
 // ==== 事件绑定 ====
 btnDraw.onclick=draw;
 btnDone.onclick=markDone;btnSkip.onclick=markSkip;
-btnReveal.onclick=revealTitle;btnText.onclick=revealText;
-btnReset.onclick=resetRound;btnUndo.onclick=undoMark;
+btnReveal.onclick=revealTitle;btnText.onclick=function(){showPwDialog(revealText);};
+btnReset.onclick=function(){showPwDialog(resetRound);};btnUndo.onclick=undoMark;
 btnMic.onclick=function(){if(isRecording)stopRecording();else startRecording();};
 btnCatalog.onclick=openCatalog;
 sheetClose.onclick=closeCatalog;
